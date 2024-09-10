@@ -49,17 +49,21 @@ export default {
     },
     async eliminarMedicamento(id) {
       if (confirm("¿Está seguro de que desea eliminar este medicamento?")) {
-        try {
-          await axios.delete(`http://localhost:8080/api/medicamentos/${id}`);
-          this.obtenerMedicamentos();
-        } catch (error) {
-          console.error(error);
-        }
+        this.eliminarMedicamento(medicamento);
+      }
+    },
+    async eliminarMedicamento(medicamento) {
+      try {
+        await axios.delete(`/api/medicamentos/${medicamento.id}`);
+        this.obtenerMedicamentos();
+        alert(`Eliminaste el medicamento ${medicamento.nombre}`);
+      } catch (error) {
+        console.error(error);
       }
     },
     async obtenerMedicamentos() {
       try {
-        const response = await axios.get('http://localhost:8080/api/medicamentos');
+        const response = await axios.get('/api/medicamentos');
         this.medicamentos = response.data;
       } catch (error) {
         console.error(error);

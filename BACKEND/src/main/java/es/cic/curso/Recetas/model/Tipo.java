@@ -1,6 +1,8 @@
 package es.cic.curso.Recetas.model;
 
-import java.util.Set;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -10,7 +12,6 @@ import jakarta.validation.constraints.Size;
 @Table(name = "tipo")
 public class Tipo {
 
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,7 +34,8 @@ public class Tipo {
     private String interacciones;
 
     @OneToMany(mappedBy = "tipo", orphanRemoval = true)
-    private Set<Medicamento> medicamentos;
+    @JsonManagedReference
+    private List<Medicamento> medicamentos;
 
     public Long getId() {
         return id;
@@ -75,14 +77,12 @@ public class Tipo {
         this.interacciones = interacciones;
     }
 
-    public Set<Medicamento> getMedicamentos() {
+    public List<Medicamento> getMedicamentos() {
         return medicamentos;
     }
 
-    public void setMedicamentos(Set<Medicamento> medicamentos) {
+    public void setMedicamentos(List<Medicamento> medicamentos) {
         this.medicamentos = medicamentos;
     }
-
-    
 
 }

@@ -3,6 +3,7 @@ import Home from '../components/Home.vue';
 import TipoMedicamento from '../components/TipoMedicamento.vue';
 import ListadoMedicamentos from '../components/ListadoMedicamentos.vue';
 import InsertarMedicamento from '../components/InsertarMedicamento.vue';
+import InsertarTipo from '../components/InsertarTipo.vue';
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: '/insertar',
     name: 'InsertarMedicamento',
     component: InsertarMedicamento
+  },
+  {
+    path: '/insertartipo',
+    name: 'InsertarTipo',
+    component: InsertarTipo
   }
 ];
 

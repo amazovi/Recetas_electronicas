@@ -1,17 +1,25 @@
+import { fileURLToPath, URL } from 'node:url'; 
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import path from 'path';
+import vueDevTools from 'vite-plugin-vue-devtools';
 
+//https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    vueDevTools(),
+  ],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src')
-    }
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
   },
   server: {
-    watch: {
-      ignored: ['**/node_modules/**', '**/dist/**']
-    }
-  }
+   proxy:{
+      '/api': {
+        target: 'http://localhost:8080',
+        secure: false,
+      },
+    },
+  },
 });
