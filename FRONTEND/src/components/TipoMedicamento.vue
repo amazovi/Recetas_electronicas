@@ -8,9 +8,7 @@
       <input v-model="nuevoTipo.id" type="hidden" />
       <div class="mb-3">
         <label for="nombre" class="form-label">Nombre</label>
-        <select v-model="nuevoTipo.nombre" class="form-control" id="nombre" required>
-          <option v-for="tipo in tipos" :key="tipo.id" :value="tipo.nombre">{{ tipo.nombre }}</option>
-        </select>
+        <input v-model="nuevoTipo.nombre" type="text" class="form-control" id="nombre" required />
       </div>
       <div class="mb-3">
         <label for="descripcion" class="form-label">Descripción</label>
@@ -44,7 +42,7 @@
           <td>{{ tipo.usosComunes }}</td>
           <td>{{ tipo.interacciones }}</td>
           <td>
-            <button class="btn btn-danger" @click="confirmarEliminacion(tipo.nombre)">Eliminar</button>
+            <button class="btn btn-danger" @click="confirmarEliminacion(tipo.id)">Eliminar</button>
           </td>
         </tr>
       </tbody>
@@ -74,14 +72,14 @@ export default {
         console.error(error);
       }
     },
-    confirmarEliminacion(nombre) {
+    confirmarEliminacion(id) {
       if (confirm("¿Está seguro de que desea eliminar este tipo?")) {
-        this.eliminarTipo(nombre);
+        this.eliminarTipo(id);
       }
     },
-    async eliminarTipo(nombre) {
+    async eliminarTipo(id) {
       try {
-        await axios.delete(`http://localhost:8080/api/tipos/${nombre}`);
+        await axios.delete(`http://localhost:8080/api/tipos/${id}`);
         this.obtenerTipos();
       } catch (error) {
         console.error(error);

@@ -34,9 +34,9 @@ public class Medicamento {
     private String descripcion;
 
     @NotNull(message = "La dosis recomendada no puede ser nula")
-    @Min(value = 1, message = "La dosis recomendada debe ser mayor o igual a 1")
-    @Column(name = "dosis_recomendada", nullable = false)
-    private Integer dosisRecomendada;
+    @Size(max = 255, message = "La dosis recomendada no puede tener más de 255 caracteres")
+    @Column(name = "dosis_recomendada")
+    private String dosisRecomendada;
 
     @Size(max = 100, message = "El laboratorio no puede tener más de 100 caracteres")
     @Column(name = "laboratorio")
@@ -83,11 +83,11 @@ public class Medicamento {
         this.descripcion = descripcion;
     }
 
-    public Integer getDosisRecomendada() {
+    public String getDosisRecomendada() {
         return dosisRecomendada;
     }
 
-    public void setDosisRecomendada(Integer dosisRecomendada) {
+    public void setDosisRecomendada(String dosisRecomendada) {
         this.dosisRecomendada = dosisRecomendada;
     }
 

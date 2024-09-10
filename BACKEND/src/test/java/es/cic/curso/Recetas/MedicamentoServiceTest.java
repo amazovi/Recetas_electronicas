@@ -32,15 +32,20 @@ public class MedicamentoServiceTest {
     private MedicamentoService medicamentoService;
 
     private Medicamento medicamento;
-
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         medicamento = new Medicamento();
         medicamento.setId(1L);
         medicamento.setNombre("Paracetamol");
+        medicamento.setDescripcion("Antipirético utilizado para reducir fiebre y dolor.");
+        medicamento.setDosisRecomendada("500 mg cada 8 horas");
+        medicamento.setLaboratorio("Lab D");
+        medicamento.setViaAdministracion("Oral");
+        medicamento.setContraindicaciones("No exceder la dosis recomendada.");
     }
 
+    
     @Test
     public void testFindAll() {
         List<Medicamento> medicamentos = Arrays.asList(medicamento);
