@@ -1,5 +1,5 @@
 CREATE TABLE tipo (
-    id INT PRIMARY KEY,
+    id BIGINT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     descripcion TEXT,
     usos_comunes TEXT,
@@ -7,7 +7,7 @@ CREATE TABLE tipo (
 );
 
 CREATE TABLE medicamento (
-    id INT PRIMARY KEY,
+    id BIGINT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     descripcion TEXT,
     dosis_recomendada VARCHAR(255),
@@ -15,6 +15,6 @@ CREATE TABLE medicamento (
     viaAdministracion VARCHAR(255),
     contraindicaciones TEXT,
     precio DECIMAL(10, 2),
-    tipo_id INT,
+    tipo_id BIGINT,
     FOREIGN KEY (tipo_id) REFERENCES tipo(id)
 );

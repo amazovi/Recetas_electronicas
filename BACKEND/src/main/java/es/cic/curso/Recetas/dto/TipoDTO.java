@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 
 public class TipoDTO {
 
-    private Integer id;
+    private Long id;
 
     @NotBlank(message = "El nombre no puede estar vacío")
     @Size(max = 255, message = "El nombre no puede tener más de 255 caracteres")
@@ -20,11 +20,11 @@ public class TipoDTO {
     @Size(max = 500, message = "Las interacciones no pueden tener más de 500 caracteres")
     private String interacciones;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -60,6 +60,5 @@ public class TipoDTO {
         this.interacciones = interacciones;
     }
 
-    
-
+   
 }
