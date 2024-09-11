@@ -2,18 +2,18 @@
   <div class="container mt-5">
     <h2>Tipos de Medicamentos</h2>
     <div class="d-flex justify-content-start mb-3">
-      <router-link to="/insertar-tipo" class="btn btn-success">
-        Añadir Nuevo Tipo
+      <router-link to="/insertartipo" class="btn btn-success">
+        Añadir
       </router-link>
     </div>
     <table class="table table-striped mt-3">
       <thead>
         <tr>
-          <th>Nombre</th>
-          <th>Descripción</th>
-          <th>Usos Comunes</th>
-          <th>Interacciones</th>
-          <th>Acciones</th>
+          <th class="text-center">Nombre</th>
+          <th class="text-center">Descripción</th>
+          <th class="text-center">Usos Comunes</th>
+          <th class="text-center">Interacciones</th>
+          <th class="text-center">Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -25,7 +25,7 @@
           <td>
             <div class="btn-group" role="group">
               <button class="btn btn-primary" @click="abrirModal(tipo)">Modificar</button>
-              <button class="btn btn-danger" @click="confirmarEliminacion(tipo.id)">Eliminar</button>
+              <button class="btn btn-danger" @click="abrirModalConfirmacion(tipo)">Eliminar</button>
             </div>
           </td>
         </tr>
@@ -64,19 +64,77 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal de confirmación de eliminación -->
+    <div class="modal fade" id="confirmacionModal" tabindex="-1" aria-labelledby="confirmacionModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmacionModalLabel">Confirmar Eliminación</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            ¿Está seguro de que desea eliminar el tipo {{ tipoSeleccionado.nombre }}?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-danger" @click="eliminarTipoConfirmado">Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de confirmación de guardado -->
+    <div class="modal fade" id="confirmacionGuardadoModal" tabindex="-1" aria-labelledby="confirmacionGuardadoModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmacionGuardadoModalLabel">Confirmación</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Cambios en el tipo {{ tipoSeleccionado.nombre }} guardados.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de confirmación de eliminación exitosa -->
+    <div class="modal fade" id="confirmacionEliminacionModal" tabindex="-1" aria-labelledby="confirmacionEliminacionModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmacionEliminacionModalLabel">Confirmación</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            El tipo {{ tipoSeleccionado.nombre }} ha sido eliminado.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 import { ref } from 'vue';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import * as bootstrap from 'bootstrap';
 
 export default {
   name: 'TipoMedicamento',
   setup() {
     const tipos = ref([]);
     const tipoSeleccionado = ref({ id: null, nombre: '', descripcion: '', usosComunes: '', interacciones: '' });
-
+    
     const obtenerTipos = async () => {
       try {
         const response = await axios.get('/api/tipos');
@@ -86,16 +144,20 @@ export default {
       }
     };
 
-    const confirmarEliminacion = (id) => {
-      if (confirm("¿Está seguro de que desea eliminar este tipo?")) {
-        eliminarTipo(id);
-      }
+    const abrirModalConfirmacion = (tipo) => {
+      tipoSeleccionado.value = { ...tipo };
+      const modal = new bootstrap.Modal(document.getElementById('confirmacionModal'));
+      modal.show();
     };
 
-    const eliminarTipo = async (id) => {
+    const eliminarTipoConfirmado = async () => {
       try {
-        await axios.delete(`/api/tipos/${id}`);
+        await axios.delete(`/api/tipos/${tipoSeleccionado.value.id}`);
         obtenerTipos();
+        const modal = bootstrap.Modal.getInstance(document.getElementById('confirmacionModal'));
+        modal.hide();
+        const confirmacionEliminacionModal = new bootstrap.Modal(document.getElementById('confirmacionEliminacionModal'));
+        confirmacionEliminacionModal.show();
       } catch (error) {
         console.error('Error al eliminar el tipo:', error);
       }
@@ -110,9 +172,11 @@ export default {
     const guardarCambios = async () => {
       try {
         await axios.put(`/api/tipos/${tipoSeleccionado.value.id}`, tipoSeleccionado.value);
-        obtenerTipos();
         const modal = bootstrap.Modal.getInstance(document.getElementById('editarModal'));
         modal.hide();
+        const confirmacionModal = new bootstrap.Modal(document.getElementById('confirmacionGuardadoModal'));
+        confirmacionModal.show();
+        obtenerTipos();
       } catch (error) {
         console.error('Error al guardar los cambios:', error);
       }
@@ -125,8 +189,8 @@ export default {
       tipos,
       tipoSeleccionado,
       obtenerTipos,
-      confirmarEliminacion,
-      eliminarTipo,
+      abrirModalConfirmacion,
+      eliminarTipoConfirmado,
       abrirModal,
       guardarCambios
     };
@@ -149,9 +213,8 @@ h2 {
   margin-top: 20px;
 }
 
-.table th, .table td {
-  text-align: left;
-  padding: 10px;
+.table th {
+  text-align: center;
 }
 
 .btn {

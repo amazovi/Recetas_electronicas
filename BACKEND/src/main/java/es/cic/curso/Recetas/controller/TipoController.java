@@ -6,14 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.*;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import es.cic.curso.Recetas.model.Tipo;
 import es.cic.curso.Recetas.repository.TipoRepository;
@@ -25,10 +18,12 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/tipos")
 @Validated
 public class TipoController {
-
  
     @Autowired
     private TipoRepository tipoRepository;
+
+    @Autowired
+    private TipoService tipoService;
 
     @GetMapping
     public List<Tipo> getAllTipos() {
@@ -43,18 +38,26 @@ public class TipoController {
 
     @PostMapping
     public ResponseEntity<Tipo> createTipo(@Valid @RequestBody Tipo tipo) {
-        Tipo createdTipo = tipoRepository.save(tipo);
-        return ResponseEntity.ok(createdTipo);
+        try {
+            Tipo createdTipo = tipoService.save(tipo);
+            return ResponseEntity.ok(createdTipo);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
+        }
     }
-
+    
     @PutMapping("/{id}")
     public ResponseEntity<Tipo> updateTipo(@PathVariable Long id, @Valid @RequestBody Tipo tipo) {
         if (!tipoRepository.findById(id).isPresent()) {
             return ResponseEntity.notFound().build();
         }
-        tipo.setId(id);
-        Tipo updatedTipo = tipoRepository.save(tipo);
-        return ResponseEntity.ok(updatedTipo);
+        try {
+            tipo.setId(id);
+            Tipo updatedTipo = tipoService.save(tipo);
+            return ResponseEntity.ok(updatedTipo);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
+        }
     }
 
     @DeleteMapping("/{id}")

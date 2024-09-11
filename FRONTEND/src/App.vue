@@ -3,6 +3,7 @@
     <nav>
       <router-link to="/" exact-active-class="active">Inicio</router-link>
       <router-link to="/categorias" exact-active-class="active">Categorías</router-link>
+      <router-link to="/listado" exact-active-class="active">Medicamentos</router-link>
     </nav>
     <router-view />
   </div>

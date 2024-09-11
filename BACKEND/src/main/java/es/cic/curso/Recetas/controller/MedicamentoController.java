@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import es.cic.curso.Recetas.dto.MedicamentoDTO;
 import es.cic.curso.Recetas.model.Medicamento;
 import es.cic.curso.Recetas.service.MedicamentoService;
 import jakarta.validation.Valid;
@@ -22,7 +23,7 @@ public class MedicamentoController {
     private MedicamentoService medicamentoService;
 
     @GetMapping
-    public List<Medicamento> getAllMedicamentos() {
+    public List<MedicamentoDTO> getAllMedicamentos() {
         return medicamentoService.findAll();
     }
 
