@@ -17,6 +17,10 @@ public class MedicamentoService {
     @Autowired
     private MedicamentoRepository medicamentoRepository;
 
+    public List<Medicamento> findByTipoId(Long tipoId) {
+        return medicamentoRepository.findByTipoId(tipoId);
+    }
+
     public List<MedicamentoDTO> findAll() {
         return medicamentoRepository.findAll().stream()
             .map(this::convertToDTO)

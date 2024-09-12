@@ -4,12 +4,15 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.*;
 import org.springframework.web.bind.annotation.*;
 
+import es.cic.curso.Recetas.model.Medicamento;
 import es.cic.curso.Recetas.model.Tipo;
 import es.cic.curso.Recetas.repository.TipoRepository;
+import es.cic.curso.Recetas.service.MedicamentoService;
 import es.cic.curso.Recetas.service.TipoService;
 import jakarta.validation.Valid;
 
@@ -24,6 +27,9 @@ public class TipoController {
 
     @Autowired
     private TipoService tipoService;
+
+    @Autowired
+    private MedicamentoService medicamentoService;
 
     @GetMapping
     public List<Tipo> getAllTipos() {
@@ -61,11 +67,22 @@ public class TipoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTipo(@PathVariable Long id) {
-        if (!tipoRepository.findById(id).isPresent()) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<String> deleteTipo(@PathVariable Long id) {
+        // Buscar medicamentos asociados a este tipo
+        List<Medicamento> medicamentosAsociados = medicamentoService.findByTipoId(id);
+        
+        if (!medicamentosAsociados.isEmpty()) {
+            // Actualizar los medicamentos asociados, estableciendo su tipo_id a NULL
+            for (Medicamento medicamento : medicamentosAsociados) {
+                medicamento.setTipo(null);  // Asignar null al tipo (esto pone el tipo_id en NULL)
+                medicamentoService.save(medicamento);  // Guardar los cambios
+            }
         }
-        tipoRepository.deleteById(id);
+        
+        // Eliminar el tipo ahora que los medicamentos no tienen el tipo asociado
+        tipoService.deleteById(id);
+        
         return ResponseEntity.noContent().build();
     }
+
 }

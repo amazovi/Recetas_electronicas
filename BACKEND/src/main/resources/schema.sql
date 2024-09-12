@@ -16,5 +16,5 @@ CREATE TABLE medicamento (
     contraindicaciones TEXT,
     precio DECIMAL(10, 2),
     tipo_id BIGINT,
-    FOREIGN KEY (tipo_id) REFERENCES tipo(id)
+    FOREIGN KEY (tipo_id) REFERENCES tipo(id) ON DELETE SET NULL
 );

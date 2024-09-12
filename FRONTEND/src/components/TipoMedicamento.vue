@@ -150,17 +150,26 @@ export default {
     };
 
     const eliminarTipoConfirmado = async () => {
-      try {
-        await axios.delete(`/api/tipos/${tipoSeleccionado.value.id}`);
-        obtenerTipos();
-        const modal = bootstrap.Modal.getInstance(document.getElementById('confirmacionModal'));
-        modal.hide();
-        const confirmacionEliminacionModal = new bootstrap.Modal(document.getElementById('confirmacionEliminacionModal'));
-        confirmacionEliminacionModal.show();
-      } catch (error) {
+    try {
+      await axios.delete(`/api/tipos/${tipoSeleccionado.value.id}`);
+      obtenerTipos();
+      // Cierra el modal de confirmación de eliminación
+      const modal = bootstrap.Modal.getInstance(document.getElementById('confirmacionModal'));
+      modal.hide();
+      
+      // Muestra el modal de eliminación exitosa
+      const confirmacionEliminacionModal = new bootstrap.Modal(document.getElementById('confirmacionEliminacionModal'));
+      confirmacionEliminacionModal.show();
+    } 
+    catch (error) {
+      if (error.response && error.response.status === 409) {
+        // Muestra un mensaje si hay conflicto (medicamentos asociados)
+        alert("No se puede eliminar el tipo porque tiene medicamentos asociados.");
+      } else {
         console.error('Error al eliminar el tipo:', error);
       }
-    };
+    }
+  };
 
     const abrirModal = (tipo) => {
       tipoSeleccionado.value = { ...tipo };

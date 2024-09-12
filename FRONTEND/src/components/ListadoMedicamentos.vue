@@ -60,7 +60,7 @@
               </div>
               <div class="mb-3">
                 <label for="precio" class="form-label">Precio</label>
-                <input v-model="medicamentoSeleccionado.precio" type="text" class="form-control" id="precio" required />
+                <input v-model="medicamentoSeleccionado.precio" type="text" class="form-control text-end" id="precio" required />
               </div>
               <div class="mb-3">
                 <label for="tipo" class="form-label">Tipo</label>
@@ -173,6 +173,9 @@ export default {
     },
     async guardarMedicamento() {
       try {
+        // Convertir comas a puntos en el precio
+        this.medicamentoSeleccionado.precio = parseFloat(this.medicamentoSeleccionado.precio.replace(',', '.'));
+        
         if (this.esNuevoMedicamento) {
           await axios.post('/api/medicamentos', this.medicamentoSeleccionado);
         } else {
@@ -243,5 +246,9 @@ export default {
 /* Ajustar el margen superior del modal para que no tape la barra de navegación */
 .modal-dialog {
   margin-top: 150px; 
+}
+
+.text-end {
+  text-align: right;
 }
 </style>
