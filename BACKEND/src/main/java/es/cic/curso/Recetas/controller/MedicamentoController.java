@@ -66,4 +66,5 @@ public class MedicamentoController {
         medicamentoService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
 }
