@@ -9,6 +9,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import es.cic.curso.Recetas.dto.MedicamentoDTO;
 import es.cic.curso.Recetas.model.Medicamento;
 import es.cic.curso.Recetas.repository.MedicamentoRepository;
 import es.cic.curso.Recetas.service.MedicamentoService;
@@ -32,6 +34,8 @@ public class MedicamentoServiceTest {
     private MedicamentoService medicamentoService;
 
     private Medicamento medicamento;
+    private MedicamentoDTO medicamentoDTO;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -43,15 +47,25 @@ public class MedicamentoServiceTest {
         medicamento.setLaboratorio("Lab D");
         medicamento.setViaAdministracion("Oral");
         medicamento.setContraindicaciones("No exceder la dosis recomendada.");
+        medicamento.setPrecio(new BigDecimal("5.99"));
+
+        medicamentoDTO = new MedicamentoDTO();
+        medicamentoDTO.setId(1L);
+        medicamentoDTO.setNombre("Paracetamol");
+        medicamentoDTO.setDescripcion("Antipirético utilizado para reducir fiebre y dolor.");
+        medicamentoDTO.setDosisRecomendada("500 mg cada 8 horas");
+        medicamentoDTO.setLaboratorio("Lab D");
+        medicamentoDTO.setViaAdministracion("Oral");
+        medicamentoDTO.setContraindicaciones("No exceder la dosis recomendada.");
+        medicamentoDTO.setPrecio(new BigDecimal("5.99"));
     }
 
-    
     @Test
     public void testFindAll() {
         List<Medicamento> medicamentos = Arrays.asList(medicamento);
         when(medicamentoRepository.findAll()).thenReturn(medicamentos);
 
-        List<Medicamento> result = medicamentoService.findAll();
+        List<MedicamentoDTO> result = medicamentoService.findAll();
         assertEquals(1, result.size());
         assertEquals("Paracetamol", result.get(0).getNombre());
     }

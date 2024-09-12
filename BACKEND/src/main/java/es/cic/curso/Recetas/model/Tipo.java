@@ -37,6 +37,7 @@ public class Tipo {
     @JsonManagedReference
     private List<Medicamento> medicamentos;
 
+    
     public Long getId() {
         return id;
     }
@@ -83,6 +84,12 @@ public class Tipo {
 
     public void setMedicamentos(List<Medicamento> medicamentos) {
         this.medicamentos = medicamentos;
+    }
+
+    @Override
+    public int hashCode() {
+        // TODO Auto-generated method stub
+        return super.hashCode();
     }
 
 }

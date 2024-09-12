@@ -1,6 +1,6 @@
 <template>
   <div class="container mt-5">
-    <h2>Tipos de Medicamentos</h2>
+    <h2>Categorías</h2>
     <div class="d-flex justify-content-start mb-3">
       <router-link to="/insertartipo" class="btn btn-success">
         Añadir
@@ -13,7 +13,7 @@
           <th class="text-center">Descripción</th>
           <th class="text-center">Usos Comunes</th>
           <th class="text-center">Interacciones</th>
-          <th class="text-center">Acciones</th>
+          <th class="text-center"></th>
         </tr>
       </thead>
       <tbody>

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -33,11 +34,22 @@ public class MedicamentoController {
         return medicamento.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    /*@PostMapping
     public ResponseEntity<Medicamento> createMedicamento(@Valid @RequestBody Medicamento medicamento) {
         Medicamento createdMedicamento = medicamentoService.save(medicamento);
         return ResponseEntity.ok(createdMedicamento);
+    }*/
+
+    @PostMapping
+    public ResponseEntity<Medicamento> createMedicamento(@RequestBody Medicamento medicamento) {
+        try {
+            Medicamento nuevoMedicamento = medicamentoService.save(medicamento);
+            return new ResponseEntity<>(nuevoMedicamento, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Medicamento> updateMedicamento(@PathVariable Long id, @Valid @RequestBody Medicamento medicamento) {

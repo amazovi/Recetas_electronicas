@@ -25,7 +25,6 @@ public class MedicamentoService {
 
     private MedicamentoDTO convertToDTO(Medicamento medicamento) {
         MedicamentoDTO dto = new MedicamentoDTO();
-        dto.setId(medicamento.getId());
         dto.setNombre(medicamento.getNombre());
         dto.setDescripcion(medicamento.getDescripcion());
         dto.setDosisRecomendada(medicamento.getDosisRecomendada());

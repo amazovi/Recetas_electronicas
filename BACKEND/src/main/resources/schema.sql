@@ -1,5 +1,5 @@
 CREATE TABLE tipo (
-    id BIGINT PRIMARY KEY,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     descripcion TEXT,
     usos_comunes TEXT,
@@ -7,7 +7,7 @@ CREATE TABLE tipo (
 );
 
 CREATE TABLE medicamento (
-    id BIGINT PRIMARY KEY,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     descripcion TEXT,
     dosis_recomendada VARCHAR(255),
