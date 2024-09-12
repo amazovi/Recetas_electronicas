@@ -17,7 +17,7 @@ public class MedicamentoService {
     @Autowired
     private MedicamentoRepository medicamentoRepository;
 
-     public List<MedicamentoDTO> findAll() {
+    public List<MedicamentoDTO> findAll() {
         return medicamentoRepository.findAll().stream()
             .map(this::convertToDTO)
             .collect(Collectors.toList());

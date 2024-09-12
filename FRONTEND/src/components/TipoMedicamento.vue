@@ -2,42 +2,44 @@
   <div class="container mt-5">
     <h2>Categorías</h2>
     <div class="d-flex justify-content-start mb-3">
-      <router-link to="/insertartipo" class="btn btn-success">
+      <button class="btn btn-success" @click="abrirModalNuevoTipo">
         Añadir
-      </router-link>
+      </button>
     </div>
-    <table class="table table-striped mt-3">
-      <thead>
-        <tr>
-          <th class="text-center">Nombre</th>
-          <th class="text-center">Descripción</th>
-          <th class="text-center">Usos Comunes</th>
-          <th class="text-center">Interacciones</th>
-          <th class="text-center"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="tipo in tipos" :key="tipo.id">
-          <td>{{ tipo.nombre }}</td>
-          <td>{{ tipo.descripcion }}</td>
-          <td>{{ tipo.usosComunes }}</td>
-          <td>{{ tipo.interacciones }}</td>
-          <td>
-            <div class="btn-group" role="group">
-              <button class="btn btn-primary" @click="abrirModal(tipo)">Modificar</button>
-              <button class="btn btn-danger" @click="abrirModalConfirmacion(tipo)">Eliminar</button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table class="table table-striped mt-3">
+        <thead>
+          <tr>
+            <th class="text-center">Nombre</th>
+            <th class="text-center">Descripción</th>
+            <th class="text-center">Usos Comunes</th>
+            <th class="text-center">Interacciones</th>
+            <th class="text-center"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="tipo in tipos" :key="tipo.id">
+            <td>{{ tipo.nombre }}</td>
+            <td>{{ tipo.descripcion }}</td>
+            <td>{{ tipo.usosComunes }}</td>
+            <td>{{ tipo.interacciones }}</td>
+            <td>
+              <div class="d-flex flex-column flex-md-row" role="group">
+                <button class="btn btn-primary mb-2 mb-md-0 me-md-2" @click="abrirModal(tipo)">Modificar</button>
+                <button class="btn btn-danger" @click="abrirModalConfirmacion(tipo)">Eliminar</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-    <!-- Modal para editar tipo -->
+    <!-- Modal para añadir o modificar tipo -->
     <div class="modal fade" id="editarModal" tabindex="-1" aria-labelledby="editarModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="editarModalLabel">Modificar Tipo</h5>
+            <h5 class="modal-title" id="editarModalLabel">{{ tipoSeleccionado.id ? 'Modificar Categoría' : 'Añadir Tipo' }}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -58,19 +60,18 @@
                 <label for="interacciones" class="form-label">Interacciones</label>
                 <input v-model="tipoSeleccionado.interacciones" type="text" class="form-control" id="interacciones" required />
               </div>
-              <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+              <button type="submit" class="btn btn-primary">{{ tipoSeleccionado.id ? 'Guardar Cambios' : 'Añadir Tipo' }}</button>
             </form>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Modal de confirmación de eliminación -->
     <div class="modal fade" id="confirmacionModal" tabindex="-1" aria-labelledby="confirmacionModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="confirmacionModalLabel">Confirmar Eliminación</h5>
+            <h5 class="modal-title" id="confirmacionModalLabel"></h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -84,12 +85,11 @@
       </div>
     </div>
 
-    <!-- Modal de confirmación de guardado -->
     <div class="modal fade" id="confirmacionGuardadoModal" tabindex="-1" aria-labelledby="confirmacionGuardadoModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="confirmacionGuardadoModalLabel">Confirmación</h5>
+            <h5 class="modal-title" id="confirmacionGuardadoModalLabel"></h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -102,12 +102,11 @@
       </div>
     </div>
 
-    <!-- Modal de confirmación de eliminación exitosa -->
     <div class="modal fade" id="confirmacionEliminacionModal" tabindex="-1" aria-labelledby="confirmacionEliminacionModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="confirmacionEliminacionModalLabel">Confirmación</h5>
+            <h5 class="modal-title" id="confirmacionEliminacionModalLabel"></h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -169,9 +168,19 @@ export default {
       modal.show();
     };
 
+    const abrirModalNuevoTipo = () => {
+      tipoSeleccionado.value = { id: null, nombre: '', descripcion: '', usosComunes: '', interacciones: '' };
+      const modal = new bootstrap.Modal(document.getElementById('editarModal'));
+      modal.show();
+    };
+
     const guardarCambios = async () => {
       try {
-        await axios.put(`/api/tipos/${tipoSeleccionado.value.id}`, tipoSeleccionado.value);
+        if (tipoSeleccionado.value.id) {
+          await axios.put(`/api/tipos/${tipoSeleccionado.value.id}`, tipoSeleccionado.value);
+        } else {
+          await axios.post('/api/tipos', tipoSeleccionado.value);
+        }
         const modal = bootstrap.Modal.getInstance(document.getElementById('editarModal'));
         modal.hide();
         const confirmacionModal = new bootstrap.Modal(document.getElementById('confirmacionGuardadoModal'));
@@ -192,6 +201,7 @@ export default {
       abrirModalConfirmacion,
       eliminarTipoConfirmado,
       abrirModal,
+      abrirModalNuevoTipo,
       guardarCambios
     };
   }
@@ -213,11 +223,18 @@ h2 {
   margin-top: 20px;
 }
 
-.table th {
+.table th, .table td {
   text-align: center;
+  word-wrap: break-word;
+  white-space: normal;
 }
 
 .btn {
   margin-right: 10px;
+}
+
+/* Ajustar el margen superior del modal para que no tape la barra de navegación */
+.modal-dialog {
+  margin-top: 150px; 
 }
 </style>
