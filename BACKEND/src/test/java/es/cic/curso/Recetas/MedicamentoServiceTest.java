@@ -44,7 +44,6 @@ public class MedicamentoServiceTest {
         medicamento.setNombre("Paracetamol");
         medicamento.setDescripcion("Antipirético utilizado para reducir fiebre y dolor.");
         medicamento.setDosisRecomendada("500 mg cada 8 horas");
-        medicamento.setLaboratorio("Lab D");
         medicamento.setViaAdministracion("Oral");
         medicamento.setContraindicaciones("No exceder la dosis recomendada.");
         medicamento.setPrecio(new BigDecimal("5.99"));
@@ -54,7 +53,6 @@ public class MedicamentoServiceTest {
         medicamentoDTO.setNombre("Paracetamol");
         medicamentoDTO.setDescripcion("Antipirético utilizado para reducir fiebre y dolor.");
         medicamentoDTO.setDosisRecomendada("500 mg cada 8 horas");
-        medicamentoDTO.setLaboratorio("Lab D");
         medicamentoDTO.setViaAdministracion("Oral");
         medicamentoDTO.setContraindicaciones("No exceder la dosis recomendada.");
         medicamentoDTO.setPrecio(new BigDecimal("5.99"));

@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import es.cic.curso.Recetas.dto.MedicamentoDTO;
 import es.cic.curso.Recetas.model.Medicamento;
+import es.cic.curso.Recetas.model.Tipo;
 import es.cic.curso.Recetas.service.MedicamentoService;
+import es.cic.curso.Recetas.service.TipoService;
 import jakarta.validation.Valid;
 
 @RestController
@@ -21,6 +23,9 @@ public class MedicamentoController {
 
     @Autowired
     private MedicamentoService medicamentoService;
+
+    @Autowired
+    private TipoService tipoService;
 
     @GetMapping
     public List<MedicamentoDTO> getAllMedicamentos() {
@@ -34,23 +39,35 @@ public class MedicamentoController {
     }
 
     @PostMapping
-    public ResponseEntity<Medicamento> createMedicamento(@Valid @RequestBody Medicamento medicamento) {
-        try {
-            Medicamento nuevoMedicamento = medicamentoService.save(medicamento);
-            return new ResponseEntity<>(nuevoMedicamento, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<Medicamento> createMedicamento(@Valid @RequestBody MedicamentoDTO medicamentoDTO) {
+            try {
+                Tipo tipo = tipoService.findById(medicamentoDTO.getTipoId()).orElse(null);
+                Medicamento medicamento = new Medicamento();
+                medicamento.setNombre(medicamentoDTO.getNombre());
+                medicamento.setDescripcion(medicamentoDTO.getDescripcion());
+                medicamento.setDosisRecomendada(medicamentoDTO.getDosisRecomendada());
+                medicamento.setPrecio(medicamentoDTO.getPrecio());
+                medicamento.setTipo(tipo);
+                Medicamento nuevoMedicamento = medicamentoService.save(medicamento);
+                return new ResponseEntity<>(nuevoMedicamento, HttpStatus.CREATED);
+            } catch (Exception e) {
+                e.printStackTrace(); // Esto puede ayudar a depurar problemas en el servidor
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Medicamento> updateMedicamento(@PathVariable Long id, @Valid @RequestBody Medicamento medicamento) {
+    public ResponseEntity<Medicamento> updateMedicamento(@PathVariable Long id,
+            @Valid @RequestBody MedicamentoDTO medicamentoDTO) {
         Optional<Medicamento> medicamentoExistente = medicamentoService.findById(id);
         if (!medicamentoExistente.isPresent()) {
             return ResponseEntity.notFound().build();
         }
-        medicamento.setId(id);
         try {
+            Tipo tipo = tipoService.findById(medicamentoDTO.getTipoId()).orElse(null);
+            Medicamento medicamento = medicamentoExistente.get();
+            // Mapear otros campos de MedicamentoDTO a Medicamento
+            medicamento.setTipo(tipo);
             Medicamento updatedMedicamento = medicamentoService.save(medicamento);
             return ResponseEntity.ok(updatedMedicamento);
         } catch (Exception e) {

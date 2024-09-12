@@ -30,10 +30,6 @@ public class Medicamento {
     @Column(name = "dosis_recomendada")
     private String dosisRecomendada;
 
-    @Size(max = 100, message = "El laboratorio no puede tener más de 100 caracteres")
-    @Column(name = "laboratorio")
-    private String laboratorio;
-
     @Size(max = 100, message = "La vía de administración no puede tener más de 100 caracteres")
     @Column(name = "via_administracion")
     private String viaAdministracion;
@@ -82,14 +78,6 @@ public class Medicamento {
 
     public void setDosisRecomendada(String dosisRecomendada) {
         this.dosisRecomendada = dosisRecomendada;
-    }
-
-    public String getLaboratorio() {
-        return laboratorio;
-    }
-
-    public void setLaboratorio(String laboratorio) {
-        this.laboratorio = laboratorio;
     }
 
     public String getViaAdministracion() {

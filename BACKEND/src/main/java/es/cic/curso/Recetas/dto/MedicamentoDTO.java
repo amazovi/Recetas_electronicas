@@ -8,8 +8,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-
-
 public class MedicamentoDTO {
 
     private Long id;
@@ -23,9 +21,6 @@ public class MedicamentoDTO {
 
     @Size(max = 255, message = "La dosis recomendada no puede tener más de 255 caracteres")
     private String dosisRecomendada;
-
-    @Size(max = 255, message = "El laboratorio no puede tener más de 255 caracteres")
-    private String laboratorio;
 
     @Size(max = 255, message = "La vía de administración no puede tener más de 255 caracteres")
     private String viaAdministracion;
@@ -63,12 +58,6 @@ public class MedicamentoDTO {
     }
     public void setDosisRecomendada(String dosisRecomendada) {
         this.dosisRecomendada = dosisRecomendada;
-    }
-    public String getLaboratorio() {
-        return laboratorio;
-    }
-    public void setLaboratorio(String laboratorio) {
-        this.laboratorio = laboratorio;
     }
     public String getViaAdministracion() {
         return viaAdministracion;

@@ -45,7 +45,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form @submit.prevent="guardarMedicamento">
+            <form @submit.prevent="esNuevoMedicamento ? agregarMedicamento() : editarMedicamento()">
               <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre</label>
                 <input v-model="medicamentoSeleccionado.nombre" type="text" class="form-control" id="nombre" required />
@@ -65,6 +65,7 @@
               <div class="mb-3">
                 <label for="tipo" class="form-label">Tipo</label>
                 <select v-model="medicamentoSeleccionado.tipoId" class="form-control" id="tipo" required>
+                  <option value="" disabled selected>Seleccione un tipo</option> <!-- Opción predeterminada -->
                   <option v-for="tipo in tipos" :key="tipo.id" :value="tipo.id">{{ tipo.nombre }}</option>
                 </select>
               </div>
@@ -87,22 +88,6 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
             <button type="button" class="btn btn-danger" @click="eliminarMedicamentoConfirmado">Eliminar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal fade" id="confirmacionGuardadoModal" tabindex="-1" aria-labelledby="confirmacionGuardadoModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            Cambios guardados en el medicamento {{ medicamentoSeleccionado.nombre }}.
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
           </div>
         </div>
       </div>
@@ -160,11 +145,19 @@ export default {
   methods: {
     abrirModalNuevoMedicamento() {
       this.esNuevoMedicamento = true;
-      this.medicamentoSeleccionado = { id: null, nombre: '', descripcion: '', dosisRecomendada: '', precio: '', tipoId: null };
+      this.medicamentoSeleccionado = {
+        id: null,
+        nombre: '',
+        descripcion: '',
+        dosisRecomendada: '',
+        precio: '',
+        tipoId: this.tipos.length > 0 ? this.tipos[0].id : null // Establece el primer tipo si hay tipos disponibles
+      };
       const modal = new bootstrap.Modal(document.getElementById('editarModal'));
       modal.show();
     },
     abrirModalEditar(medicamento) {
+      console.log("Medicamento seleccionado para editar:", medicamento); // Verificar si el medicamento tiene ID
       this.esNuevoMedicamento = false;
       this.medicamentoSeleccionado = { ...medicamento };
       this.medicamentoSeleccionado.precio = this.medicamentoSeleccionado.precio.toString().replace('.', ','); // Convertir punto a coma
@@ -192,29 +185,79 @@ export default {
         console.error('Error al eliminar el medicamento:', error);
       }
     },
-    async guardarMedicamento() {
+    async agregarMedicamento() {
       try {
         // Convertir comas a puntos en el precio
         if (typeof this.medicamentoSeleccionado.precio === 'string') {
           this.medicamentoSeleccionado.precio = parseFloat(this.medicamentoSeleccionado.precio.replace(',', '.'));
         }
-        if (this.esNuevoMedicamento) {
-          await axios.post('/api/medicamentos', this.medicamentoSeleccionado);
-          const confirmacionModal = new bootstrap.Modal(document.getElementById('confirmacionAgregadoModal'));
-          confirmacionModal.show();
-        } else if (this.medicamentoSeleccionado.id) {
-          await axios.put(`/api/medicamentos/${this.medicamentoSeleccionado.id}`, this.medicamentoSeleccionado);
-          const confirmacionModal = new bootstrap.Modal(document.getElementById('confirmacionGuardadoModal'));
-          confirmacionModal.show();
+
+        // Validar que tipoId no sea null o vacío
+        if (!this.medicamentoSeleccionado.tipoId) {
+          alert('Por favor, seleccione un tipo para el medicamento.');
+          return;
         }
+
+        await axios.post('/api/medicamentos', this.medicamentoSeleccionado);
+        const confirmacionModal = new bootstrap.Modal(document.getElementById('confirmacionAgregadoModal'));
+        confirmacionModal.show();
         this.obtenerMedicamentos();
         const modal = bootstrap.Modal.getInstance(document.getElementById('editarModal'));
         modal.hide();
       } catch (error) {
-        console.error('Error al guardar el medicamento:', error);
+        console.error('Error al agregar el medicamento:', error);
       }
     },
+    async editarMedicamento() {
+      try {
+        // Asegurarse de que el precio esté correctamente formateado como número
+        const precio = this.medicamentoSeleccionado.precio;
+        if (typeof precio === 'string') {
+          // Convertir coma a punto
+          this.medicamentoSeleccionado.precio = parseFloat(precio.replace(',', '.'));
+          if (isNaN(this.medicamentoSeleccionado.precio)) {
+            throw new Error('El formato del precio es inválido.');
+          }
+        }
 
+        // Validar que tipoId esté seleccionado
+        if (!this.medicamentoSeleccionado.tipoId) {
+          alert('Por favor, seleccione un tipo para el medicamento.');
+          return;
+        }
+
+        // Validar que el medicamento tenga un ID antes de editar
+        if (!this.medicamentoSeleccionado.id) {
+          console.error('ID del medicamento es null o undefined');
+          return;
+        }
+
+        // Realizar la solicitud PUT para actualizar el medicamento
+        await axios.put(`/api/medicamentos/${this.medicamentoSeleccionado.id}`, this.medicamentoSeleccionado);
+
+        // Mostrar confirmación de guardado
+        const confirmacionModalElement = document.getElementById('confirmacionGuardadoModal');
+        if (confirmacionModalElement) {
+          const confirmacionModal = bootstrap.Modal.getOrCreateInstance(confirmacionModalElement);
+          confirmacionModal.show();
+        }
+
+        // Actualizar la lista de medicamentos
+        this.obtenerMedicamentos();
+
+        // Cerrar el modal de edición
+        const modalElement = document.getElementById('editarModal');
+        if (modalElement) {
+          const modal = bootstrap.Modal.getInstance(modalElement);
+          if (modal) {
+            modal.hide();
+          }
+        }
+      } catch (error) {
+        console.error('Error al editar el medicamento:', error.message || error);
+        alert(`Error: ${error.message || 'Ha ocurrido un error al intentar editar el medicamento.'}`);
+      }
+    },
     async obtenerMedicamentos() {
       try {
         const response = await axios.get('/api/medicamentos');
