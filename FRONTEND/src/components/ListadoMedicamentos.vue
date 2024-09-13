@@ -61,6 +61,7 @@
               <div class="mb-3">
                 <label for="precio" class="form-label">Precio</label>
                 <input v-model="medicamentoSeleccionado.precio" type="text" class="form-control text-end" id="precio" required />
+                <span class="input-group-text">€</span>
               </div>
               <div class="mb-3">
                 <label for="tipo" class="form-label">Tipo</label>
@@ -69,7 +70,7 @@
                   <option v-for="tipo in tipos" :key="tipo.id" :value="tipo.id">{{ tipo.nombre }}</option>
                 </select>
               </div>
-              <button type="submit" class="btn btn-primary">{{ esNuevoMedicamento ? 'Añadir Medicamento' : 'Guardar Cambios' }}</button>
+              <button type="submit" class="btn btn-primary">{{ esNuevoMedicamento ? 'Añadir' : 'Guardar Cambios' }}</button>
             </form>
           </div>
         </div>

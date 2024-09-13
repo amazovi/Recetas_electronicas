@@ -39,7 +39,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="editarModalLabel">{{ tipoSeleccionado.id ? 'Modificar Categoría' : 'Añadir Tipo' }}</h5>
+            <h5 class="modal-title" id="editarModalLabel">{{ tipoSeleccionado.id ? 'Modificar Categoría' : 'Añadir Categoría' }}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -60,7 +60,7 @@
                 <label for="interacciones" class="form-label">Interacciones</label>
                 <input v-model="tipoSeleccionado.interacciones" type="text" class="form-control" id="interacciones" required />
               </div>
-              <button type="submit" class="btn btn-primary">{{ tipoSeleccionado.id ? 'Guardar Cambios' : 'Añadir Tipo' }}</button>
+              <button type="submit" class="btn btn-primary">{{ tipoSeleccionado.id ? 'Guardar Cambios' : 'Añadir Categoría' }}</button>
             </form>
           </div>
         </div>
@@ -93,7 +93,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            Cambios en el tipo {{ tipoSeleccionado.nombre }} guardados.
+            Cambios en la categoría{{ tipoSeleccionado.nombre }} guardados.
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>

@@ -10,7 +10,7 @@ const routes = [
     component: Home
   },
   {
-    path: '/listado',
+    path: '/medicamentos',
     name: 'ListadoMedicamentos',
     component: ListadoMedicamentos
   },

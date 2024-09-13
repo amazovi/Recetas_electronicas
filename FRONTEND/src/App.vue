@@ -15,7 +15,7 @@
               <router-link class="nav-link" to="/categorias" exact-active-class="active">Categorías</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/listado" exact-active-class="active">Medicamentos</router-link>
+              <router-link class="nav-link" to="/medicamentos" exact-active-class="active">Medicamentos</router-link>
             </li>
           </ul>
         </div>
